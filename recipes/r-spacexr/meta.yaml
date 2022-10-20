@@ -1,0 +1,77 @@
+{% set name = "r-spacexr" %}
+{% set version = "2.0.3" %}
+{% set ref = "54de03f4227a11bb1670a3aa02701505039b8087"}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://api.github.com/repos/dmcable/spacexr/tarball/{{ ref }}
+  fn: {{ name }}/{{ version }}.tar.gz
+  sha256: 41187e376e4c0e4e2ec6d27ac61e31ab6c376a2421051a06099110e1101d6066
+
+build:
+  number: 0
+  noarch: generic
+  merge_build_host: True  # [win]
+  rpaths:
+   - lib/R/lib
+   - lib/
+
+requirements:
+  build:
+    - {{ posix }}zip  # [win]
+    - cross-r-base {{ r_base }}   # [build_platform != target_platform]
+  host:
+    - r-base  # [>=3.5.0]
+    - readr
+    - ggplot2
+    - pals
+    - doParallel
+    - foreach
+    - quadprog
+    - dplyr
+    - reshape2
+    - fields
+    - mgcv
+    - CompQuadForm
+  run:
+    - r-base  # [>=3.5.0]
+    - readr
+    - ggplot2
+    - pals
+    - doParallel
+    - foreach
+    - quadprog
+    - dplyr
+    - reshape2
+    - fields
+    - mgcv
+    - CompQuadForm
+
+test:
+  commands:
+    - $R -e "library('spacexr')"           # [not win]
+    - "\"%R%\" -e \"library('spacexr')\""  # [win]
+
+about:
+  home: https://github.com/dmcable/spacexr
+  summary: 'Cell type identification and cell type-specific differential expression for spatial transcriptomics'
+  description: |
+    SpatialeXpressionR is a toolkit for Cell type identification
+    and cell type-specific differential expression in spatial transcriptomics
+    consisting of RCTD (Robust Cell Type Decomposition) and
+    C-SIDE (Cell type-Specific Inference of Differential Expression 
+  license: GPL-3.0
+  license_family: GPL3
+  license_file: LICENSE
+  doc_url: https://github.com/dmcable/spacexr/tree/master/documentation
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r
+    - theAeon
